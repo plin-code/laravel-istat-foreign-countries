@@ -21,22 +21,7 @@ test('import service imports data from CSV', function (): void {
 
     $service = app(ForeignCountriesImportService::class);
 
-    // Debug: controlla cosa viene effettivamente parsato
-    try {
-        $count = $service->execute();
-    } catch (\Exception $e) {
-        dump('Error during import: '.$e->getMessage());
-        throw $e;
-    }
-
-    // Debug dettagliato
-    dump([
-        'Total count returned' => $count,
-        'Countries in DB' => Country::count(),
-        'Country codes' => Country::pluck('istat_code')->toArray(),
-        'Continents' => Continent::count(),
-        'Areas' => Area::count(),
-    ]);
+    $count = $service->execute();
 
     expect(Country::count())->toBeGreaterThanOrEqual(2)
         ->and(Continent::count())->toBe(2)
