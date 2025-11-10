@@ -4,7 +4,7 @@ use PlinCode\IstatForeignCountries\Models\ForeignCountries\Area;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Continent;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Country;
 
-test('country belongs to continent', function () {
+test('country belongs to continent', function (): void {
     $continent = Continent::factory()->create(['name' => 'Europe']);
     $area = Area::factory()->create(['continent_id' => $continent->id]);
 
@@ -17,7 +17,7 @@ test('country belongs to continent', function () {
         ->and($country->continent->name)->toBe('Europe');
 });
 
-test('country belongs to area', function () {
+test('country belongs to area', function (): void {
     $continent = Continent::factory()->create();
     $area = Area::factory()->create([
         'continent_id' => $continent->id,
@@ -33,35 +33,35 @@ test('country belongs to area', function () {
         ->and($country->area->name)->toBe('European Union');
 });
 
-test('country can have parent country', function () {
+test('country can have parent country', function (): void {
     $continent = Continent::factory()->create();
     $area = Area::factory()->create(['continent_id' => $continent->id]);
 
     $parent = Country::factory()->create([
         'continent_id' => $continent->id,
         'area_id' => $area->id,
-        'name_it' => 'Francia',
+        'name' => 'Francia',
     ]);
 
     $territory = Country::factory()->create([
         'continent_id' => $continent->id,
         'area_id' => $area->id,
         'parent_country_id' => $parent->id,
-        'name_it' => 'Guyana Francese',
+        'name' => 'Guyana Francese',
     ]);
 
     expect($territory->parentCountry)->not->toBeNull()
-        ->and($territory->parentCountry->name_it)->toBe('Francia');
+        ->and($territory->parentCountry->name)->toBe('Francia');
 });
 
-test('country can have territories', function () {
+test('country can have territories', function (): void {
     $continent = Continent::factory()->create();
     $area = Area::factory()->create(['continent_id' => $continent->id]);
 
     $parent = Country::factory()->create([
         'continent_id' => $continent->id,
         'area_id' => $area->id,
-        'name_it' => 'Francia',
+        'name' => 'Francia',
     ]);
 
     Country::factory()->count(3)->create([

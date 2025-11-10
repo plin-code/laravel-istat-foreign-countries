@@ -2,7 +2,7 @@
 
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Continent;
 
-it('can create a continent', function () {
+it('can create a continent', function (): void {
     $continent = Continent::factory()->create([
         'name' => 'Europe',
         'istat_code' => '1',
@@ -13,7 +13,7 @@ it('can create a continent', function () {
         ->and($continent->id)->not->toBeNull();
 });
 
-it('can retrieve a continent from database', function () {
+it('can retrieve a continent from database', function (): void {
     $continent = Continent::factory()->create([
         'name' => 'Asia',
         'istat_code' => '2',

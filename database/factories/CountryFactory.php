@@ -25,14 +25,14 @@ class CountryFactory extends Factory
         ];
     }
 
-    public function state(): static
+    public function asState(): static
     {
         return $this->state(fn (array $attributes) => [
             'type' => 'S',
         ]);
     }
 
-    public function territory(): static
+    public function asTerritory(): static
     {
         return $this->state(fn (array $attributes) => [
             'type' => 'T',

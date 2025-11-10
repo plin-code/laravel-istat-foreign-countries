@@ -33,7 +33,5 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        $migration = include __DIR__.'/../database/migrations/create_istat_foreign_countries_table.php';
-        $migration->up();
     }
 }

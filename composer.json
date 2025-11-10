@@ -46,10 +46,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "PlinCode\\IstatForeignCountries\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
-            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+            "PlinCode\\IstatForeignCountries\\Tests\\": "tests/"
         }
     },
     "scripts": {

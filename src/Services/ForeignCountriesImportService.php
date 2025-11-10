@@ -5,10 +5,11 @@ namespace PlinCode\IstatForeignCountries\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use League\Csv\Bom;
+use League\Csv\Exception;
+use League\Csv\InvalidArgument;
 use League\Csv\Reader;
-use PlinCode\IstatForeignCountries\Models\ForeignCountries\Area;
-use PlinCode\IstatForeignCountries\Models\ForeignCountries\Continent;
-use PlinCode\IstatForeignCountries\Models\ForeignCountries\Country;
+use League\Csv\UnavailableFeature;
+use League\Csv\UnavailableStream;
 
 class ForeignCountriesImportService
 {
@@ -34,6 +35,9 @@ class ForeignCountriesImportService
         $this->countryModel = config('istat-foreign-countries.models.country');
     }
 
+    /**
+     * @throws \Exception
+     */
     public function execute(): int
     {
         $csvPath = $this->downloadCsv();
@@ -45,29 +49,37 @@ class ForeignCountriesImportService
     private function downloadCsv(): string
     {
         $storage = Storage::disk('local');
-        $filePath = storage_path('app/'.$this->tempFilename);
 
         if ($storage->exists($this->tempFilename)) {
-            $lastModified = filemtime($filePath);
-            if ($lastModified && date('Y-m-d') === date('Y-m-d', $lastModified)) {
-                return $filePath;
+            $filePath = $storage->path($this->tempFilename);
+            if (file_exists($filePath)) {
+                $lastModified = filemtime($filePath);
+                if ($lastModified && date('Y-m-d') === date('Y-m-d', $lastModified)) {
+                    return $filePath;
+                }
             }
         }
 
         $response = Http::timeout(60)->get($this->csvUrl);
 
         if ($response->failed()) {
-            throw new \Exception('Failed to download CSV from ISTAT');
+            throw new \RuntimeException('Failed to download CSV from ISTAT');
         }
 
         $storage->put($this->tempFilename, $response->body());
 
-        return $filePath;
+        return $storage->path($this->tempFilename);
     }
 
+    /**
+     * @throws InvalidArgument
+     * @throws UnavailableStream
+     * @throws UnavailableFeature
+     * @throws Exception
+     */
     private function prepareCsvReader(string $path): Reader
     {
-        $csv = Reader::createFromPath($path, 'r');
+        $csv = Reader::from($path, 'r');
         $csv->setOutputBOM(Bom::Utf8);
         $csv->appendStreamFilterOnRead('convert.iconv.ISO-8859-15/UTF-8');
         $csv->setDelimiter(';');
@@ -76,6 +88,9 @@ class ForeignCountriesImportService
         return $csv;
     }
 
+    /**
+     * @throws Exception
+     */
     private function processRecords(Reader $csv): int
     {
         $records = $csv->getRecords();
@@ -89,12 +104,10 @@ class ForeignCountriesImportService
         foreach ($records as $record) {
             $values = array_values($record);
 
-            // Skip if not enough columns
             if (count($values) < 13) {
                 continue;
             }
 
-            // Extract data
             $type = $values[0];
             $continentCode = $values[1];
             $continentName = $values[2];
@@ -102,11 +115,10 @@ class ForeignCountriesImportService
             $areaName = $values[4];
             $istatCode = $values[5];
             $name = $values[6];
-            $atCode = $values[9] !== 'n.d.' ? $values[9] : null;
-            $isoAlpha2 = $values[11] !== '' ? $values[11] : null;
-            $isoAlpha3 = $values[12] !== '' ? $values[12] : null;
+            $atCode = isset($values[9]) && $values[9] !== 'n.d.' ? $values[9] : null;
+            $isoAlpha2 = isset($values[11]) && $values[11] !== '' ? $values[11] : null;
+            $isoAlpha3 = isset($values[12]) && $values[12] !== '' ? $values[12] : null;
 
-            // Process continent
             if (! isset($continents[$continentCode])) {
                 $continents[$continentCode] = $this->processContinent($continentName, $continentCode);
             }
@@ -119,7 +131,6 @@ class ForeignCountriesImportService
             }
             $areaId = $areas[$areaKey];
 
-            // Process country (without parent reference for now)
             $countryId = $this->processCountry(
                 $type,
                 $name,
@@ -132,10 +143,8 @@ class ForeignCountriesImportService
             );
 
             $countriesByIstatCode[$istatCode] = $countryId;
-            $count++;
         }
 
-        // Second pass: update parent relationships
         $records = $csv->getRecords();
         foreach ($records as $record) {
             $values = array_values($record);
@@ -152,7 +161,7 @@ class ForeignCountriesImportService
             }
         }
 
-        return $count;
+        return count($countriesByIstatCode);
     }
 
     private function processContinent(string $name, string $istatCode): string

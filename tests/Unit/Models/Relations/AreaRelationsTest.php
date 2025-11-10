@@ -4,7 +4,7 @@ use PlinCode\IstatForeignCountries\Models\ForeignCountries\Area;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Continent;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Country;
 
-test('area belongs to continent', function () {
+test('area belongs to continent', function (): void {
     $continent = Continent::factory()->create(['name' => 'Europe']);
 
     $area = Area::factory()->create([
@@ -16,7 +16,7 @@ test('area belongs to continent', function () {
         ->and($area->continent->name)->toBe('Europe');
 });
 
-test('area has many countries', function () {
+test('area has many countries', function (): void {
     $continent = Continent::factory()->create();
     $area = Area::factory()->create(['continent_id' => $continent->id]);
 

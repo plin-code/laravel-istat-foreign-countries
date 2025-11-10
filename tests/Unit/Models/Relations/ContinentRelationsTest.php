@@ -4,7 +4,7 @@ use PlinCode\IstatForeignCountries\Models\ForeignCountries\Area;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Continent;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Country;
 
-test('continent has many areas', function () {
+test('continent has many areas', function (): void {
     $continent = Continent::factory()->create();
 
     Area::factory()->count(3)->create([
@@ -14,7 +14,7 @@ test('continent has many areas', function () {
     expect($continent->areas)->toHaveCount(3);
 });
 
-test('continent has many countries', function () {
+test('continent has many countries', function (): void {
     $continent = Continent::factory()->create();
     $area = Area::factory()->create(['continent_id' => $continent->id]);
 
