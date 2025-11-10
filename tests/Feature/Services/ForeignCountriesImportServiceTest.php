@@ -25,7 +25,7 @@ test('import service imports data from CSV', function (): void {
     try {
         $count = $service->execute();
     } catch (\Exception $e) {
-        dump('Error during import: ' . $e->getMessage());
+        dump('Error during import: '.$e->getMessage());
         throw $e;
     }
 
