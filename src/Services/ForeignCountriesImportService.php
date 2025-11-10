@@ -102,7 +102,7 @@ class ForeignCountriesImportService
         // First pass: create continents, areas and countries
         foreach ($records as $record) {
             // Skip if essential columns are missing
-            if (!isset(
+            if (! isset(
                 $record['Stato(S)/Territorio(T)'],
                 $record['Codice Continente'],
                 $record['Denominazione Continente (IT)'],
@@ -153,7 +153,7 @@ class ForeignCountriesImportService
 
         $records = $csv->getRecords();
         foreach ($records as $record) {
-            if (!isset($record['Codice ISTAT'])) {
+            if (! isset($record['Codice ISTAT'])) {
                 continue;
             }
 
