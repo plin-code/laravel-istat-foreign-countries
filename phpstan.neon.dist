@@ -10,3 +10,6 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
+    ignoreErrors:
+        # Country: la proprietà $type è definita nel fillable e casts, ma PHPStan non la riconosce
+        - '#Access to an undefined property PlinCode\\IstatForeignCountries\\Models\\ForeignCountries\\Country::\$type\.#'
