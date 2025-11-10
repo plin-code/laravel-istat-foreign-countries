@@ -94,7 +94,6 @@ class ForeignCountriesImportService
     private function processRecords(Reader $csv): int
     {
         $records = $csv->getRecords();
-        $count = 0;
 
         $continents = [];
         $areas = [];
@@ -102,22 +101,29 @@ class ForeignCountriesImportService
 
         // First pass: create continents, areas and countries
         foreach ($records as $record) {
-            $values = array_values($record);
-
-            if (count($values) < 13) {
+            // Skip if essential columns are missing
+            if (!isset(
+                $record['Stato(S)/Territorio(T)'],
+                $record['Codice Continente'],
+                $record['Denominazione Continente (IT)'],
+                $record['Codice Area'],
+                $record['Denominazione Area (IT)'],
+                $record['Codice ISTAT'],
+                $record['Denominazione IT']
+            )) {
                 continue;
             }
 
-            $type = $values[0];
-            $continentCode = $values[1];
-            $continentName = $values[2];
-            $areaCode = $values[3];
-            $areaName = $values[4];
-            $istatCode = $values[5];
-            $name = $values[6];
-            $atCode = isset($values[9]) && $values[9] !== 'n.d.' ? $values[9] : null;
-            $isoAlpha2 = isset($values[11]) && $values[11] !== '' ? $values[11] : null;
-            $isoAlpha3 = isset($values[12]) && $values[12] !== '' ? $values[12] : null;
+            $type = $record['Stato(S)/Territorio(T)'];
+            $continentCode = $record['Codice Continente'];
+            $continentName = $record['Denominazione Continente (IT)'];
+            $areaCode = $record['Codice Area'];
+            $areaName = $record['Denominazione Area (IT)'];
+            $istatCode = $record['Codice ISTAT'];
+            $name = $record['Denominazione IT'];
+            $atCode = isset($record['Codice AT']) && $record['Codice AT'] !== 'n.d.' ? $record['Codice AT'] : null;
+            $isoAlpha2 = isset($record['Codice ISO 3166 alpha2']) && $record['Codice ISO 3166 alpha2'] !== '' ? $record['Codice ISO 3166 alpha2'] : null;
+            $isoAlpha3 = isset($record['Codice ISO 3166 alpha3']) && $record['Codice ISO 3166 alpha3'] !== '' ? $record['Codice ISO 3166 alpha3'] : null;
 
             if (! isset($continents[$continentCode])) {
                 $continents[$continentCode] = $this->processContinent($continentName, $continentCode);
@@ -147,14 +153,12 @@ class ForeignCountriesImportService
 
         $records = $csv->getRecords();
         foreach ($records as $record) {
-            $values = array_values($record);
-
-            if (count($values) < 14) {
+            if (!isset($record['Codice ISTAT'])) {
                 continue;
             }
 
-            $istatCode = $values[5];
-            $parentIstatCode = isset($values[13]) && $values[13] !== '' ? $values[13] : null;
+            $istatCode = $record['Codice ISTAT'];
+            $parentIstatCode = isset($record['Codice ISTAT_Stato Padre']) && $record['Codice ISTAT_Stato Padre'] !== '' ? $record['Codice ISTAT_Stato Padre'] : null;
 
             if ($parentIstatCode && isset($countriesByIstatCode[$parentIstatCode])) {
                 $this->updateCountryParent($istatCode, $countriesByIstatCode[$parentIstatCode]);
