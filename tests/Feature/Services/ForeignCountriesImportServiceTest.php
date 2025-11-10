@@ -1,10 +1,13 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Area;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Continent;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Country;
 use PlinCode\IstatForeignCountries\Services\ForeignCountriesImportService;
+
+uses(RefreshDatabase::class);
 
 test('import service imports data from CSV', function (): void {
     $csvData = "Stato(S)/Territorio(T);Codice Continente;Denominazione Continente (IT);Codice Area;Denominazione Area (IT);Codice ISTAT;Denominazione IT;Denominazione EN;Codice MIN;Codice AT;Codice UNSD_M49;Codice ISO 3166 alpha2;Codice ISO 3166 alpha3;Codice ISTAT_Stato Padre;Codice ISO alpha3_Stato Padre\n";
@@ -17,7 +20,23 @@ test('import service imports data from CSV', function (): void {
     ]);
 
     $service = app(ForeignCountriesImportService::class);
-    $count = $service->execute();
+
+    // Debug: controlla cosa viene effettivamente parsato
+    try {
+        $count = $service->execute();
+    } catch (\Exception $e) {
+        dump('Error during import: ' . $e->getMessage());
+        throw $e;
+    }
+
+    // Debug dettagliato
+    dump([
+        'Total count returned' => $count,
+        'Countries in DB' => Country::count(),
+        'Country codes' => Country::pluck('istat_code')->toArray(),
+        'Continents' => Continent::count(),
+        'Areas' => Area::count(),
+    ]);
 
     expect(Country::count())->toBeGreaterThanOrEqual(2)
         ->and(Continent::count())->toBe(2)
