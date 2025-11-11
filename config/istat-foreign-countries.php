@@ -55,8 +55,9 @@ return [
     */
 
     'import' => [
-        'csv_url' => 'https://www.istat.it/storage/codici-unita-amministrative/Elenco-codici-e-denominazioni-unita-territoriali-estere.csv',
+        'csv_url' => 'https://www.istat.it/wp-content/uploads/2024/03/Elenco-codici-e-denominazioni-unita-territoriali-estere.zip',
         'temp_filename' => 'istat_foreign_countries.csv',
+        'temp_zip_filename' => 'istat_foreign_countries.zip',
     ],
 
 ];
