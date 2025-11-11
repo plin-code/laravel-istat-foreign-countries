@@ -67,9 +67,10 @@ class ForeignCountriesImportService
             }
         }
 
-        $isZipped = Str::endsWith(parse_url($this->csvUrl, PHP_URL_PATH), '.zip');
-
         $response = Http::timeout(60)->get($this->csvUrl);
+        $contentType = $response->header('Content-Type');
+
+        $isZipped = $contentType === 'application/zip' || $contentType === 'application/x-zip-compressed';
 
         if ($response->failed()) {
             throw new \RuntimeException('Failed to download CSV from ISTAT');
@@ -123,7 +124,7 @@ class ForeignCountriesImportService
                 throw new RuntimeException('No CSV found inside the ZIP');
             }
         } else {
-            throw new RuntimeException('Failed to open ZIP file');
+            throw new RuntimeException('Failed to open ZIP file '.$downloadedFile);
         }
     }
 
