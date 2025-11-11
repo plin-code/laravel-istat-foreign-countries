@@ -5,13 +5,13 @@ namespace PlinCode\IstatForeignCountries\Services;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use League\Csv\Bom;
 use League\Csv\Exception;
 use League\Csv\InvalidArgument;
 use League\Csv\Reader;
 use League\Csv\UnavailableFeature;
 use League\Csv\UnavailableStream;
-use Illuminate\Support\Str;
 use RuntimeException;
 use ZipArchive;
 
@@ -82,15 +82,16 @@ class ForeignCountriesImportService
 
         $downloadedFile = $storage->path($fileName);
 
-        if($isZipped){
-            $downloadedFile = $this->unzip($storage,$downloadedFile);
+        if ($isZipped) {
+            $downloadedFile = $this->unzip($storage, $downloadedFile);
         }
 
         return $downloadedFile;
     }
 
-    private function unzip(Filesystem $storage, string $downloadedFile): string {
-        $zip = new ZipArchive();
+    private function unzip(Filesystem $storage, string $downloadedFile): string
+    {
+        $zip = new ZipArchive;
         if ($zip->open($downloadedFile) === true) {
             $extractedFolder = 'istat_foreign_countries_extracted';
             $extractPath = $storage->path($extractedFolder);
@@ -105,7 +106,7 @@ class ForeignCountriesImportService
                 if (Str::endsWith(strtolower($filename), '.csv')) {
                     $zip->extractTo($extractPath, $filename);
 
-                    $oldPath = $extractPath . DIRECTORY_SEPARATOR . $filename;
+                    $oldPath = $extractPath.DIRECTORY_SEPARATOR.$filename;
                     $newPath = $storage->path($this->tempFilename);
                     rename($oldPath, $newPath);
 
@@ -118,7 +119,7 @@ class ForeignCountriesImportService
             $storage->delete($this->tempZipFilename);
             $storage->deleteDirectory($extractedFolder);
 
-            if (!blank($csvFile)) {
+            if (! blank($csvFile)) {
                 return $csvFile;
             } else {
                 throw new RuntimeException('No CSV found inside the ZIP');
