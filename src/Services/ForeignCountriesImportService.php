@@ -2,6 +2,7 @@
 
 namespace PlinCode\IstatForeignCountries\Services;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use League\Csv\Bom;
@@ -10,12 +11,17 @@ use League\Csv\InvalidArgument;
 use League\Csv\Reader;
 use League\Csv\UnavailableFeature;
 use League\Csv\UnavailableStream;
+use Illuminate\Support\Str;
+use RuntimeException;
+use ZipArchive;
 
 class ForeignCountriesImportService
 {
     private string $csvUrl;
 
     private string $tempFilename;
+
+    private string $tempZipFilename;
 
     private ?string $connection;
 
@@ -29,6 +35,7 @@ class ForeignCountriesImportService
     {
         $this->csvUrl = config('istat-foreign-countries.import.csv_url');
         $this->tempFilename = config('istat-foreign-countries.import.temp_filename');
+        $this->tempZipFilename = config('istat-foreign-countries.import.temp_zip_filename');
         $this->connection = config('istat-foreign-countries.database_connection');
         $this->continentModel = config('istat-foreign-countries.models.continent');
         $this->areaModel = config('istat-foreign-countries.models.area');
@@ -60,15 +67,64 @@ class ForeignCountriesImportService
             }
         }
 
+        $isZipped = Str::endsWith(parse_url($this->csvUrl, PHP_URL_PATH), '.zip');
+
         $response = Http::timeout(60)->get($this->csvUrl);
 
         if ($response->failed()) {
             throw new \RuntimeException('Failed to download CSV from ISTAT');
         }
 
-        $storage->put($this->tempFilename, $response->body());
+        $fileName = $isZipped ? $this->tempZipFilename : $this->tempFilename;
 
-        return $storage->path($this->tempFilename);
+        $storage->put($fileName, $response->body());
+
+        $downloadedFile = $storage->path($fileName);
+
+        if($isZipped){
+            $downloadedFile = $this->unzip($storage,$downloadedFile);
+        }
+
+        return $downloadedFile;
+    }
+
+    private function unzip(Filesystem $storage, string $downloadedFile): string {
+        $zip = new ZipArchive();
+        if ($zip->open($downloadedFile) === true) {
+            $extractedFolder = 'istat_foreign_countries_extracted';
+            $extractPath = $storage->path($extractedFolder);
+            if ($storage->exists($extractedFolder)) {
+                $storage->deleteDirectory($extractedFolder);
+            }
+            $storage->makeDirectory($extractedFolder);
+
+            $csvFile = null;
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                if (Str::endsWith(strtolower($filename), '.csv')) {
+                    $zip->extractTo($extractPath, $filename);
+
+                    $oldPath = $extractPath . DIRECTORY_SEPARATOR . $filename;
+                    $newPath = $storage->path($this->tempFilename);
+                    rename($oldPath, $newPath);
+
+                    $csvFile = $storage->path($this->tempFilename);
+                }
+            }
+
+            $zip->close();
+
+            $storage->delete($this->tempZipFilename);
+            $storage->deleteDirectory($extractedFolder);
+
+            if (!blank($csvFile)) {
+                return $csvFile;
+            } else {
+                throw new RuntimeException('No CSV found inside the ZIP');
+            }
+        } else {
+            throw new RuntimeException('Failed to open ZIP file');
+        }
     }
 
     /**
