@@ -33,8 +33,8 @@ return new class extends Migration
             $table->string('type', 1); // S = State, T = Territory
             $table->string('name');
             $table->string('istat_code', 10)->unique();
-            $table->string('iso_alpha2', 2)->nullable();
-            $table->string('iso_alpha3', 3)->nullable();
+            $table->string('iso_alpha2', 4)->nullable();
+            $table->string('iso_alpha3', 4)->nullable();
             $table->string('at_code', 10)->nullable();
             $table->timestamps();
             $table->softDeletes();
