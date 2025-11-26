@@ -183,6 +183,10 @@ class ForeignCountriesImportService
             $isoAlpha2 = isset($record['Codice ISO 3166 alpha2']) && $record['Codice ISO 3166 alpha2'] !== '' ? $record['Codice ISO 3166 alpha2'] : null;
             $isoAlpha3 = isset($record['Codice ISO 3166 alpha3']) && $record['Codice ISO 3166 alpha3'] !== '' ? $record['Codice ISO 3166 alpha3'] : null;
 
+            if(blank($name)){
+                continue;
+            }
+
             if (! isset($continents[$continentCode])) {
                 $continents[$continentCode] = $this->processContinent($continentName, $continentCode);
             }
