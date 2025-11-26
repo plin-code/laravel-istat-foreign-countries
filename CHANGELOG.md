@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-istat-foreign-countries` will be documented in this file.
 
+## v1.1.1 - 2025-11-26
+
+### What's Changed
+
+* Bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/plin-code/laravel-istat-foreign-countries/pull/4
+* Fix: empty blank line bypass by @Gybra in https://github.com/plin-code/laravel-istat-foreign-countries/pull/5
+
+**Full Changelog**: https://github.com/plin-code/laravel-istat-foreign-countries/compare/1.1.0...1.1.1
+
 ## v1.1.0 - 2025-11-11
 
 ### ✨ New Features
