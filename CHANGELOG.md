@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-istat-foreign-countries` will be documented in this file.
 
+## v1.1.3 - 2026-04-02
+
+### Fix
+
+- Remove `hasViews()` from service provider. The package has no views directory, causing `DirectoryNotFoundException` on production deployments.
+
 ## v1.1.2 - 2026-04-02
 
 ### Fix
