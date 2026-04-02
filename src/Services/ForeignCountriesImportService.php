@@ -73,7 +73,7 @@ class ForeignCountriesImportService
         $isZipped = $contentType === 'application/zip' || $contentType === 'application/x-zip-compressed';
 
         if ($response->failed()) {
-            throw new \RuntimeException('Failed to download CSV from ISTAT');
+            throw new RuntimeException('Failed to download CSV from ISTAT');
         }
 
         $fileName = $isZipped ? $this->tempZipFilename : $this->tempFilename;
