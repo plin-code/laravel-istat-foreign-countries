@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-istat-foreign-countries` will be documented in this file.
 
+## v1.1.2 - 2026-04-02
+
+### Fix
+
+- Fix `countries` table migration failing on PostgreSQL when creating self-referencing foreign key `parent_country_id`
+- Split the FK constraint into a separate `Schema::table` call that runs after table creation
+- SQLite and MySQL are unaffected
+
 ## v1.1.1 - 2025-11-26
 
 ### What's Changed
