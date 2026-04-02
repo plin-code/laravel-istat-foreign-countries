@@ -14,7 +14,6 @@ class IstatForeignCountriesServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-istat-foreign-countries')
             ->hasConfigFile('istat-foreign-countries')
-            ->hasViews()
             ->hasMigration('create_istat_foreign_countries_table')
             ->hasCommand(IstatForeignCountriesCommand::class);
     }
