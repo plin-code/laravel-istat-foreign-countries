@@ -2,12 +2,21 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Area;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Continent;
 use PlinCode\IstatForeignCountries\Models\ForeignCountries\Country;
 use PlinCode\IstatForeignCountries\Services\ForeignCountriesImportService;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function (): void {
+    $storage = Storage::disk('local');
+    $filename = config('istat-foreign-countries.import.temp_filename');
+    if ($storage->exists($filename)) {
+        $storage->delete($filename);
+    }
+});
 
 test('import service imports data from CSV', function (): void {
     $csvData = "Stato(S)/Territorio(T);Codice Continente;Denominazione Continente (IT);Codice Area;Denominazione Area (IT);Codice ISTAT;Denominazione IT;Denominazione EN;Codice MIN;Codice AT;Codice UNSD_M49;Codice ISO 3166 alpha2;Codice ISO 3166 alpha3;Codice ISTAT_Stato Padre;Codice ISO alpha3_Stato Padre\n";
