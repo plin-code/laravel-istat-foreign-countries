@@ -179,9 +179,9 @@ class ForeignCountriesImportService
             $areaName = $record['Denominazione Area (IT)'];
             $istatCode = $record['Codice ISTAT'];
             $name = $record['Denominazione IT'];
-            $atCode = isset($record['Codice AT']) && $record['Codice AT'] !== 'n.d.' ? $record['Codice AT'] : null;
-            $isoAlpha2 = isset($record['Codice ISO 3166 alpha2']) && $record['Codice ISO 3166 alpha2'] !== '' ? $record['Codice ISO 3166 alpha2'] : null;
-            $isoAlpha3 = isset($record['Codice ISO 3166 alpha3']) && $record['Codice ISO 3166 alpha3'] !== '' ? $record['Codice ISO 3166 alpha3'] : null;
+            $atCode = isset($record['Codice AT']) && !in_array($record['Codice AT'], ['', 'n.d.']) ? $record['Codice AT'] : null;
+            $isoAlpha2 = isset($record['Codice ISO 3166 alpha2']) && !in_array($record['Codice ISO 3166 alpha2'], ['', 'n.d.']) ? $record['Codice ISO 3166 alpha2'] : null;
+            $isoAlpha3 = isset($record['Codice ISO 3166 alpha3']) && !in_array($record['Codice ISO 3166 alpha3'], ['', 'n.d.']) ? $record['Codice ISO 3166 alpha3'] : null;
 
             if (blank($name)) {
                 continue;
@@ -220,7 +220,7 @@ class ForeignCountriesImportService
             }
 
             $istatCode = $record['Codice ISTAT'];
-            $parentIstatCode = isset($record['Codice ISTAT_Stato Padre']) && $record['Codice ISTAT_Stato Padre'] !== '' ? $record['Codice ISTAT_Stato Padre'] : null;
+            $parentIstatCode = isset($record['Codice ISTAT_Stato Padre']) && !in_array($record['Codice ISTAT_Stato Padre'], ['', 'n.d.']) ? $record['Codice ISTAT_Stato Padre'] : null;
 
             if ($parentIstatCode && isset($countriesByIstatCode[$parentIstatCode])) {
                 $this->updateCountryParent($istatCode, $countriesByIstatCode[$parentIstatCode]);
