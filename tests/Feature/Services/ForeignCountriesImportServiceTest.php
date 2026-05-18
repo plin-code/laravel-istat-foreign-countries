@@ -91,7 +91,7 @@ test('import service correctly sanitizes various placeholders into null values',
         ->and($sark->iso_alpha2)->toBeNull()
         ->and($sark->iso_alpha3)->toBeNull()
         ->and($sark->parent_country_id)->not->toBeNull();
-    
+
     $italia = Country::where('istat_code', '100')->first();
     expect($italia)->not->toBeNull()
         ->and($italia->at_code)->toBeNull()
