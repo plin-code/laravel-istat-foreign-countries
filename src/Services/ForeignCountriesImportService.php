@@ -231,14 +231,13 @@ class ForeignCountriesImportService
     }
 
     /**
-     * Sanitize optional ISTAT dataset fields, converting empty strings, 
-     * common placeholders (n.d., n/a, null, -), or any case-insensitive 
+     * Sanitize optional ISTAT dataset fields, converting empty strings,
+     * common placeholders (n.d., n/a, null, -), or any case-insensitive
      * variations into null values.
      *
-     * @param array $record The current CSV record
-     * @param string $key The field key to verify
-     * @param bool $strict Whether to use strict type checking in in_array
-     * @return string|null
+     * @param  array  $record  The current CSV record
+     * @param  string  $key  The field key to verify
+     * @param  bool  $strict  Whether to use strict type checking in in_array
      */
     private function sanitizeIstatField(array $record, string $key, bool $strict = true): ?string
     {
