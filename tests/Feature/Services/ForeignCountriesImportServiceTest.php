@@ -48,6 +48,7 @@ test('import service correctly sanitizes various placeholders into null values',
     $csvData .= "T;4;America;42;America centro meridionale;904;Saint-Martin (FR);Saint Martin (FR);542;n.d.;n.D.;MF;MAF;215;FRA\n";
     $csvData .= "T;5;Oceania;50;Oceania;988;Terre australi e antartiche francesi;French Southern Territories;806;n.d.;N.D.;TF;ATF;215;FRA\n";
     $csvData .= "S;1;Europa;13;Altri Paesi europei;939;Sark;Sark;n.d.;null;n.d.;;-;219;GBR\n";
+    $csvData .= "S;1;Europa;11;Unione europea;100;Italia;Italy;100;n/a;380;IT;ITA;;\n";
 
     Http::fake([
         '*' => Http::response($csvData, 200),
@@ -68,7 +69,7 @@ test('import service correctly sanitizes various placeholders into null values',
         ->and($kosovo->at_code)->toBe('Z160')
         ->and($kosovo->iso_alpha2)->toBeNull()
         ->and($kosovo->iso_alpha3)->toBe('KOS')
-        ->and($papua->parent_country_id)->toBeNull();
+        ->and($kosovo->parent_country_id)->toBeNull();
 
     $saintMartin = Country::where('istat_code', '904')->first();
     expect($saintMartin)->not->toBeNull()
@@ -90,4 +91,11 @@ test('import service correctly sanitizes various placeholders into null values',
         ->and($sark->iso_alpha2)->toBeNull()
         ->and($sark->iso_alpha3)->toBeNull()
         ->and($sark->parent_country_id)->not->toBeNull();
+    
+    $italia = Country::where('istat_code', '100')->first();
+    expect($italia)->not->toBeNull()
+        ->and($italia->at_code)->toBeNull()
+        ->and($italia->iso_alpha2)->toBe('IT')
+        ->and($italia->iso_alpha3)->toBe('ITA')
+        ->and($italia->parent_country_id)->toBeNull();
 });
