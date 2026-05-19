@@ -179,9 +179,9 @@ class ForeignCountriesImportService
             $areaName = $record['Denominazione Area (IT)'];
             $istatCode = $record['Codice ISTAT'];
             $name = $record['Denominazione IT'];
-            $atCode = isset($record['Codice AT']) && $record['Codice AT'] !== 'n.d.' ? $record['Codice AT'] : null;
-            $isoAlpha2 = isset($record['Codice ISO 3166 alpha2']) && $record['Codice ISO 3166 alpha2'] !== '' ? $record['Codice ISO 3166 alpha2'] : null;
-            $isoAlpha3 = isset($record['Codice ISO 3166 alpha3']) && $record['Codice ISO 3166 alpha3'] !== '' ? $record['Codice ISO 3166 alpha3'] : null;
+            $atCode = $this->sanitizeIstatField($record, 'Codice AT');
+            $isoAlpha2 = $this->sanitizeIstatField($record, 'Codice ISO 3166 alpha2');
+            $isoAlpha3 = $this->sanitizeIstatField($record, 'Codice ISO 3166 alpha3');
 
             if (blank($name)) {
                 continue;
@@ -220,7 +220,7 @@ class ForeignCountriesImportService
             }
 
             $istatCode = $record['Codice ISTAT'];
-            $parentIstatCode = isset($record['Codice ISTAT_Stato Padre']) && $record['Codice ISTAT_Stato Padre'] !== '' ? $record['Codice ISTAT_Stato Padre'] : null;
+            $parentIstatCode = $this->sanitizeIstatField($record, 'Codice ISTAT_Stato Padre');
 
             if ($parentIstatCode && isset($countriesByIstatCode[$parentIstatCode])) {
                 $this->updateCountryParent($istatCode, $countriesByIstatCode[$parentIstatCode]);
@@ -228,6 +228,26 @@ class ForeignCountriesImportService
         }
 
         return count($countriesByIstatCode);
+    }
+
+    /**
+     * Sanitize optional ISTAT dataset fields, converting empty strings,
+     * common placeholders (n.d., n/a, null, -), or any case-insensitive
+     * variations into null values.
+     *
+     * @param  array  $record  The current CSV record
+     * @param  string  $key  The field key to verify
+     * @param  bool  $strict  Whether to use strict type checking in in_array
+     */
+    private function sanitizeIstatField(array $record, string $key, bool $strict = true): ?string
+    {
+        if (! isset($record[$key])) {
+            return null;
+        }
+
+        $value = trim($record[$key]);
+
+        return in_array(strtolower($value), ['', 'n.d.', 'n/a', '-', 'null'], $strict) ? null : $value;
     }
 
     private function processContinent(string $name, string $istatCode): string
