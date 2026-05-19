@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-istat-foreign-countries` will be documented in this file.
 
+## v1.1.4 - 2026-05-19
+
+### Fix
+
+- Sanitize optional ISTAT fields (`iso_alpha2`, `iso_alpha3`, `at_code`, `parent_country_id`) by converting empty strings and common placeholders (`n.d.`, `n/a`, `-`, `null`, case-insensitive, trimmed) to `null` before insert. Previously these values leaked into the database and broke length-bound columns like ISO alpha2/alpha3.
+- Extract sanitization into a private `sanitizeIstatField()` helper so all optional fields share one consistent rule.
+
+Thanks to [@dpapperini](https://github.com/dpapperini) for the contribution in [#12](https://github.com/plin-code/laravel-istat-foreign-countries/pull/12).
+
 ## v1.1.3 - 2026-04-02
 
 ### Fix
