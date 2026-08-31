@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/plin-code/laravel-istat-foreign-countries/main/art/banner.png" alt="Laravel ISTAT Foreign Countries">
+</p>
+
 # Laravel ISTAT Foreign Countries
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/plin-code/laravel-istat-foreign-countries.svg?style=flat-square)](https://packagist.org/packages/plin-code/laravel-istat-foreign-countries)
