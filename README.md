@@ -4,10 +4,13 @@
 
 # Laravel ISTAT Foreign Countries
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/plin-code/laravel-istat-foreign-countries.svg?style=flat-square)](https://packagist.org/packages/plin-code/laravel-istat-foreign-countries)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/plin-code/laravel-istat-foreign-countries/run-tests.yml?branch=main&label=tests)](https://github.com/plin-code/laravel-istat-foreign-countries/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/plin-code/laravel-istat-foreign-countries/fix-php-code-style-issues.yml?branch=main&label=code%20style)](https://github.com/plin-code/laravel-istat-foreign-countries/actions?query=workflow%3A%22Check+%26+fix+styling%22+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/plin-code/laravel-istat-foreign-countries.svg?style=flat-square)](https://packagist.org/packages/plin-code/laravel-istat-foreign-countries)
+<p align="center">
+    <a href="https://packagist.org/packages/plin-code/laravel-istat-foreign-countries"><img src="https://img.shields.io/packagist/v/plin-code/laravel-istat-foreign-countries.svg?style=flat-square" alt="Packagist"></a>
+    <a href="https://packagist.org/packages/plin-code/laravel-istat-foreign-countries"><img src="https://img.shields.io/packagist/php-v/plin-code/laravel-istat-foreign-countries.svg?style=flat-square" alt="PHP from Packagist"></a>
+    <a href="https://packagist.org/packages/plin-code/laravel-istat-foreign-countries"><img src="https://badge.laravel.cloud/badge/plin-code/laravel-istat-foreign-countries?style=flat" alt="Laravel versions"></a>
+    <a href="https://github.com/plin-code/laravel-istat-foreign-countries/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/plin-code/laravel-istat-foreign-countries/run-tests.yml?branch=main&label=Tests&style=flat-square"></a>
+    <a href="https://packagist.org/packages/plin-code/laravel-istat-foreign-countries"><img src="https://img.shields.io/packagist/dt/plin-code/laravel-istat-foreign-countries.svg?style=flat-square" alt="Total Downloads"></a>
+</p>
 
 A Laravel package for importing and managing foreign countries data from ISTAT (Italian National Institute of Statistics).
 
