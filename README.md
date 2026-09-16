@@ -26,7 +26,7 @@ A Laravel package for importing and managing foreign countries data from ISTAT (
 ## Requirements
 
 - PHP 8.3+
-- Laravel 12.0+
+- Laravel 12.0+ or 13.0+
 - league/csv 9.0+
 - guzzlehttp/guzzle 7.0+
 
