@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-istat-foreign-countries` will be documented in this file.
 
+## v1.2.0 - 2026-09-16
+
+### Feature
+
+- Support Laravel 13 (Laravel 12 still supported).
+
 ## v1.1.4 - 2026-05-19
 
 ### Fix
