@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-istat-foreign-countries` will be documented in this file.
 
+## v1.2.1 - 2026-10-02
+
+### Dependencies
+
+- `guzzlehttp/guzzle` is no longer required. The package only uses Laravel's `Http` facade, so the app's Laravel install picks the Guzzle version (7 on Laravel 12, 7 or 8 on Laravel 13). (#18)
+
 ## v1.2.0 - 2026-09-16
 
 ### Feature
